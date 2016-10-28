@@ -1,1 +1,380 @@
-hello world
+#Hello User, my name is Nathan, and I hope this serves as
+# an introduction to using Sympy for APMA 330.
+#Sympy allows you to compute your homework in python and print it
+# in Latex syntax. Thus all you have to do is copy and paste the code into Latex.
+
+# The first thing is to simply download sympy, mpmath, and Latex.
+# Please contact me if you have issues with this download.
+# I'll be honest, my script only started working when I started to save
+# files into the sympy folder I downloaded from github.
+
+#The next thing is to simply import the symbols, printing syntax, and coordinate systems from
+# sympy into python:
+
+from sympy import * #symbols
+from sympy import symbols # symbolic variables
+from sympy.solvers import solve # solvers
+from sympy import sin, cos, limit # functions
+from sympy import init_printing # printing
+init_printing() # printing
+import re # regular expressions, which are useful for people who have used python before.
+from sympy import sin, sqrt # more functions
+from sympy.abc import x # an extraneous way to import a variable
+from sympy.integrals import Integral # functions continues
+from sympy.diffgeom import Manifold, Patch, CoordSystem # coordinate systems, rectangular and polar
+from sympy.simplify import simplify # My favorite function, that simplifies your math.
+# you will need to use simplify if you want to see if two results are the same:
+# aka, if simplify(result_1) == simplify(result_2):
+#				print "Results are equal."
+
+# This next part is how you define letters as symbolic variables:
+
+x, y, z, t, r, theta = symbols('x y z t r theta')
+
+#Below you will find one of my APMA 330 homeworks:
+
+# I began by organizing the homework with "if" statements. This way I can print of the results of each Problem individually.
+# This also can help a lot with debugging.
+
+def p(N,E):
+	b= "/\/begin{/equation}"
+	b=re.sub("/","",b) ## 
+	e= "\end/{/equation}"
+	e=re.sub("/","",e)
+	print b
+	print N,latex(E)
+	print e #This is your equation printing function. Sympy is good a formating indivual lines into latex, however
+	#if you want to simply copy the text from the command window into latex completely, use p(E) to format the /begin{equation}
+	# and the /end{equation}
+
+Problem = 1
+
+if Problem == 1:
+	def Problem3_1(name,psi):
+		m = Manifold('M', 2)
+		patch = Patch('P', m)
+		x, y, z, t, r, theta = symbols('x y z t r theta')
+		CoordSystem('rect', patch)
+		
+		print name
+
+		p("psi=",psi)
+
+		psi_dx=psi.diff(x)
+		p("psi.dx=",psi_dx)
+
+		My=psi_dx.diff(y)
+		p("My=",My)
+
+		psi_dy=psi.diff(y)
+		p("psi.dy=",psi_dy)
+
+		Nx=psi_dy.diff(x)
+		p("Nx=",Nx)
+
+		y_prime=-psi_dx*(1/(psi_dy))
+
+		#print "dy/dx="
+		p("dy/dx=",y_prime)
+
+		
+		if My == Nx:
+			print "The equations are Exact."
+		else:
+			print "The equations are not Exact."
+
+		#Solving the Initial Value Problem:
+
+		# MM = M.subs(y,Y)
+		# NN = N.subs(x,X)
+
+		# solution =integrate(MM, (x, X, x))+integrate(NN, (y, Y, y))
+
+
+
+	## Problem3_1a(name,psi)
+	A3_1= Problem3_1("Problem 3.1a",x**2+y**2)
+
+
+	## Problem3_1a(name,psi)
+	B3_1= Problem3_1("Problem 3.1b",exp(x*y**2))
+
+
+	## Problem3_1a(name,psi)
+	C3_1= Problem3_1("Problem 3.1c",ln(x**2*y**2))
+
+
+	## Problem3_1a(name,psi)
+	D3_1= Problem3_1("Problem 3.1d",(x+y-2)**2)
+
+if Problem == 2:
+	## Problem 3.3
+	def Problem3_2(name,M,N):
+		print name
+
+		print "M=",latex(M)
+		print "N=",latex(N)
+
+		m = Manifold('M', 2)
+		patch = Patch('P', m)
+		CoordSystem('rect', patch)
+		x, y, z, t, r, theta, Mu = symbols('x y z t r theta Mu')
+
+		My = simplify(M.diff(y))
+		print "My=",latex(My)
+		Mx = simplify(M.diff(x))
+		#print "Mx=",latex(Mx)
+		Nx = simplify(N.diff(x))
+		print "Nx=",latex(Nx)
+		Ny = simplify(N.diff(y))
+		#print "Ny=",latex(Ny)
+
+		
+		if simplify(My) == simplify(Nx):
+			print "The equations are Exact."
+		else:
+			print "The equations are not Exact."
+
+		psi_x = simplify(integrate(Mx,x))
+		print "psi_x=",latex(psi_x)
+
+		h_prime = simplify(N-psi_x.diff(y))
+		print "h_prime=",latex(h_prime)
+
+		h=simplify(integrate(h_prime,y))
+		print "h=",latex(h)
+
+		psi = simplify(psi_x +h)
+
+		print "psi=",latex(psi)
+
+	# Problem3_4a(name,M,N)
+	A3_2= Problem3_2("Problem 3.2a",x,-2*y)
+
+
+	# # ## Problem3_4b(name,M,N)
+	B3_2= Problem3_2("Problem 3.2b",y*exp(x*y)+y**2,x*exp(x*y)+2*y*x)
+
+
+	# ## Problem3_4c(name,M,N)
+	C3_2= Problem3_2("Problem 3.2c",(2*x)+exp(y),x*exp(y))
+
+
+	# ## Problem3_4d(name,M,N)
+	D3_2= Problem3_2("Problem 3.2d",2*x*y-3*x**2,x**2+y)
+
+if Problem == 3:
+	## Problem 3.3
+	def Problem3_3(name,M,N,X,Y,CS):
+		
+		print name
+
+		#print "M=",latex(M)
+		#print "N=",latex(N)
+		#print "X=",latex(X)
+		#print "Y=",latex(Y)
+
+		m = Manifold('M', 2)
+		patch = Patch('P', m)
+
+		x, y, z, t, r, theta = symbols('x y z t r theta')
+
+
+		if CS == 1:
+			CoordSystem('rect', patch)
+			My = M.diff(y)
+			#print "My=",latex(My)
+			Nx = N.diff(x)
+			#print "Nx=",latex(Nx)
+			MM = M.subs(y,Y)
+			#print "MM=",latex(MM)
+			NN = N.subs(x,X)
+			#print "NN=",latex(NN)
+			solution =integrate(MM, (x, X, x))+integrate(NN, (y, Y, y))
+			print "solution=",latex(solution)
+
+		if CS == 0:
+			CoordSystem('polar',patch)
+			r, theta = symbols('r, theta')
+			x== r
+			y== theta
+			My = M.diff(theta)
+			#print "Mtheta",latex(My)
+			Nx = N.diff(r)
+			#print "Nr",latex(Nx)
+			MM = M.subs(r,Y)
+			#print "MM",latex(MM)
+			NN = N.subs(theta,X)
+			#print "NN",latex(NN)
+			solution =integrate(MM, (r, X, r))+integrate(NN, (theta, Y, theta))
+			print "solution",latex(solution)
+
+		if My == Nx:
+			print "The equations are Exact."
+		else:
+			print "The equations are not Exact."
+
+		#Solving the Initial Value Problem:
+
+		# MM = M.subs(y,Y)
+		# NN = N.subs(x,X)
+
+		# solution =integrate(MM, (x, X, x))+integrate(NN, (y, Y, y))
+
+
+
+	## Problem3_3a(name,M,N,X,Y)
+	A3_3= Problem3_3("Problem 3.3a",cos(pi*x)*cos(2*pi*y),-2*sin(pi*x)*sin(2*pi*y),2/3,1/2,1)
+	# M = cos(pi*x)*cos(2*pi*y)
+	# N = -2*sin(pi*x)*sin(2*pi*y)
+	# X=2/3;
+	# Y=1/2;
+	# CS=1=rect coord
+
+	## Problem3_3b(name,M,N,X,Y)
+	B3_3= Problem3_3("Problem 3.3b",2*x*y,x**2+y**2,3,4,1)
+	# M= 2*x*y 
+	# N= x^2 + y^2
+	# X= 3
+	# Y= 4
+	# CS=1=rect coord
+
+	## Problem3_3c(name,M,N,X,Y)
+	C3_3= Problem3_3("Problem 3.3c",2*x*y-4,x**2+4*y-1,1,2,1)
+	# M= 2*x*y-4
+	# N= x**2+4*y-1
+	# X= 1
+	# Y= 2
+	# CS=1=rect coord
+
+	## Problem3_3d(name,M,N,X,Y)
+	D3_3= Problem3_3("Problem 3.3d",cos(theta)-2*r*cos(theta)**2,r*sin(theta)*(2*r*cos(theta)-1),pi/4,1,0)
+	# M= cos(theta)-2*r*cos(theta)**2
+	# N= r*sin(theta)*(2*r*cos(theta)-1)
+	# X= pi/4
+	# Y= 1
+	# CS=0=polar coord
+
+if Problem == 4:
+	## Problem 3.3
+	def Problem3_4(name,M,N):
+		print name
+		print "M=",latex(M)
+		print "N=",latex(N)
+
+		m = Manifold('M', 2)
+		patch = Patch('P', m)
+		CoordSystem('rect', patch)
+		x, y, z, t, r, theta, Mu = symbols('x y z t r theta Mu')
+
+		My = M.diff(y)
+		Nx = N.diff(x)
+
+		if My == Nx:
+			print "The equations are already Exact."
+
+
+		if My != Nx:
+			print "The initial equations are not Exact for " +name+ "."
+			#print "My=",My
+			#print "Nx=",Nx
+			Mu= exp(integrate((My-Nx)/N,x))
+			print "Mu=", latex(Mu)
+			#print "Mu=",Mu
+			exact_equation = Mu*M + Mu*N
+			print "exact equation=", latex(exact_equation)
+			MMu=Mu*M
+			NMu=Mu*N
+			if simplify(MMu.diff(y)) == simplify(NMu.diff(x)):
+				print "With Mu, the equations are now exact."
+			else:
+				print "Something's not right... Even with Mu, the equation is not exact."
+			
+			# print "Exact Equation=", exact_equation
+			psi=simplify(integrate(Mu*M,x))
+			print "psi=", latex(psi)
+			psiY=simplify(psi.diff(y))
+			print "psiY=", latex(psiY)
+			Kprime= simplify(NMu - psiY)
+			print "Kprime=", latex(Kprime)
+			K=integrate(Kprime,y)
+			print "K=", latex(K)
+			psi= psi + K
+			print "psi=",latex(psi)
+
+	# Problem3_4a(name,M,N)
+	A3_4= Problem3_4("Problem 3.4a",y*(1+x),1+0*y)
+
+
+	# # ## Problem3_4b(name,M,N)
+	B3_4= Problem3_4("Problem 3.4b",x*y+x**2,-x**3)
+
+
+	# ## Problem3_4c(name,M,N)
+	C3_4= Problem3_4("Problem 3.4c",(-2*y**3+exp(x*y)*y*x**3),(3*x*y**2+exp(x*y)*x**4))
+
+
+	# ## Problem3_4d(name,M,N)
+	D3_4= Problem3_4("Problem 3.4d",5+0*y,-exp(y-x))
+
+if Problem == 5:
+
+	def Problem3_5(name,M,N):
+		print name
+		print "M=",latex(M)
+		print "N=",latex(N)
+
+		m = Manifold('M', 2)
+		patch = Patch('P', m)
+		CoordSystem('rect', patch)
+		x, y, z, t, r, theta, Mu = symbols('x y z t r theta Mu')
+
+		My = M.diff(y)
+		Nx = N.diff(x)
+
+		
+		if My == Nx:
+			print latex("The equations are already Exact.")
+
+
+		if My != Nx:
+			print latex("The initial equations are not Exact for " +name+ ".")
+			#print "My=",My
+			#print "Nx=",Nx
+			Mu= exp(-integrate((My-Nx)/M,y))
+			print latex("Integrating Factor = Mu="),latex(Mu)
+			exact_equation = Mu*M + Mu*N
+			MMu=Mu*M
+			NMu=Mu*N
+			if simplify(MMu.diff(y)) == simplify(NMu.diff(x)):
+				print latex("With Mu, the equations are now exact.")
+			else:
+				print latex("Something's not right... Even with Mu, the equation is not exact.")
+			
+			# # print "Exact Equation=", exact_equation
+			psi=simplify(integrate(MMu,x))
+			Kprime=simplify(NMu.diff(y)-psi.diff(y))
+			K=simplify(integrate(Kprime,y))
+			general_solution = psi + K
+			print latex("General Solution")
+			print latex("C="),latex(general_solution)
+
+
+			# Kprime= simplify(NMu - psiY)
+			# K=integrate(Kprime,y)
+			# psi= psi + K
+			# print "psi=",psi
+
+	# Problem3_5a(name,M,N)
+	A3_5= Problem3_5("Problem 3.5a",y+1,-(x-y))
+
+	# # ## Problem3_5b(name,M,N)
+	B3_5= Problem3_5("Problem 3.5b",(y/x)-1,2*y**2+1+(x/y))
+
+
+	# ## Problem3_5c(name,M,N)
+	C3_5= Problem3_5("Problem 3.5c",2*x*y**2+y,-x)
+
+
+	# ## Problem3_5d(name,M,N)
+	D3_5= Problem3_5("Problem 3.5d",y*(x+y+1),x*(x+3*y+2))
